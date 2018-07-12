@@ -98,6 +98,7 @@ import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1389,6 +1390,38 @@ public class FrameworkUtils {
         }
 
         return queryAppendedUrl;
+    }
+
+
+    /**
+     * Append a query param map to the URL (URL may already contain query params)
+     *
+     * @param url         URL string to append the params.
+     * @param queryParams Map of query params to be append.
+     * @return Built URL with query params.
+     * @throws UnsupportedEncodingException Throws when trying to encode the query params.
+     */
+    public static String appendQueryParamsToUrl(String url, Map<String, String> queryParams)
+            throws UnsupportedEncodingException {
+
+        if (StringUtils.isEmpty(url)) {
+            throw new IllegalArgumentException("Parsed URL is empty");
+        }
+
+        StringBuilder queryStringBuilder = new StringBuilder();
+
+        for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+            String encodedValue = URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name());
+            queryStringBuilder.append(entry.getKey()).append("=").append(encodedValue).append("&");
+        }
+
+        // Removing last '&' character.
+        String queryString = queryStringBuilder.toString();
+        if (queryString.endsWith("&")) {
+            queryString = queryString.substring(1);
+        }
+
+        return appendQueryParamsStringToUrl(url, queryString);
     }
 
     public static void publishSessionEvent(String sessionId, HttpServletRequest request, AuthenticationContext
