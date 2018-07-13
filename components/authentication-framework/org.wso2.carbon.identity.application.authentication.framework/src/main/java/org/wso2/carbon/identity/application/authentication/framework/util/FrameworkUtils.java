@@ -1392,7 +1392,6 @@ public class FrameworkUtils {
         return queryAppendedUrl;
     }
 
-
     /**
      * Append a query param map to the URL (URL may already contain query params)
      *
